@@ -38,7 +38,8 @@ async def main():
         "Max loves donuts",
         "Max is a dog",
         "Max hates cats",
-        "Max hates donutsBob is a cat",
+        "Max hates donuts",
+        "Bob is a cat",
         "cats hate Max",
     ]
     for i, episode in enumerate(episodes):
