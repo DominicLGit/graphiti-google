@@ -87,20 +87,17 @@ class GeminiEmbedderClient(EmbedderClient):
     def __init__(
         self,
         config: GeminiEmbedderConfig | None = None,
-        # client is not used directly here, SDK is configured globally
     ):
         if config is None:
             config = GeminiEmbedderConfig()
         self.config = config
 
-        # Configure the Google AI SDK (safe to call multiple times)
         try:
             genai.configure(api_key=config.api_key)
         except Exception:
             logger.exception("Failed to configure Google Generative AI SDK")
             raise
 
-        # Validate task type
         valid_task_types = typing.get_args(GeminiEmbeddingTaskType)
         if self.config.task_type not in valid_task_types:
             logger.warning(

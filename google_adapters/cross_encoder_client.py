@@ -1,5 +1,4 @@
 import json
-import logging
 
 import google.generativeai as genai
 from google.api_core import exceptions as google_exceptions
@@ -7,9 +6,8 @@ from graphiti_core.cross_encoder.client import CrossEncoderClient
 from graphiti_core.helpers import semaphore_gather
 from graphiti_core.llm_client import LLMConfig
 from graphiti_core.llm_client.errors import RateLimitError
+from loguru import logger
 from pydantic import BaseModel, Field
-
-logger = logging.getLogger(__name__)
 
 # Use a fast and capable model for reranking judgments
 DEFAULT_GEMINI_RERANK_MODEL = "gemini-1.5-flash-latest"
@@ -53,7 +51,6 @@ class GeminiRerankerClient(CrossEncoderClient):
 
         self.config = config
 
-        # Configure SDK (safe to call multiple times)
         try:
             genai.configure(api_key=config.api_key)
         except Exception:
@@ -114,7 +111,7 @@ class GeminiRerankerClient(CrossEncoderClient):
                 f"Response: '{response.text if response else response}'"
             )
             return 0.0  # Score as irrelevant if response is invalid
-        except Exception:
+        except Exception:  # noqa: BLE001
             logger.exception("Unexpected error getting relevance score")
             return 0.0  # Score as irrelevant on unexpected errors
         return 1.0 if relevance.is_relevant else 0.0
@@ -135,7 +132,6 @@ class GeminiRerankerClient(CrossEncoderClient):
         if not passages:
             return []
 
-        # Create tasks for getting relevance scores concurrently
         tasks = [self._get_relevance_score(query, passage) for passage in passages]
 
         try:
