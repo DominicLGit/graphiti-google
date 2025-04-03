@@ -1,7 +1,3 @@
-Sure, here's a clean and informative `README.md` for your project:
-
----
-
 # Grafiti + Gemini Adapter
 
 A test project integrating [Graphiti Core](https://pypi.org/project/graphiti-core/) with **Google Generative AI (Gemini)** for semantic graph building, document embedding, relevance ranking, and LLM-backed processing.
